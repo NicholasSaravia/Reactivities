@@ -1,14 +1,25 @@
-import React from "react";
+import React, { SyntheticEvent } from "react";
 import { Button, Item, Label, Segment } from "semantic-ui-react";
 import { IActivity } from "../../../app/models/activity";
 
 interface IProps {
 	activities: IActivity[];
 	selectActivity: (id: string) => void;
-	deleteActivity: (id: string) => void;
+	deleteActivity: (
+		e: SyntheticEvent<HTMLButtonElement>,
+		id: string
+	) => void;
+	submitting: boolean;
+	target: string
 }
 
-export const ActivityList: React.FC<IProps> = ({ activities, selectActivity, deleteActivity }) => {
+export const ActivityList: React.FC<IProps> = ({
+	activities,
+	selectActivity,
+	deleteActivity,
+	submitting,
+	target
+}) => {
 	return (
 		<Segment clearing>
 			<Item.Group divided>
@@ -20,25 +31,43 @@ export const ActivityList: React.FC<IProps> = ({ activities, selectActivity, del
 							</Item.Header>
 							<Item.Meta>{activity.date}</Item.Meta>
 							<Item.Description>
-								<div>{activity.description}</div>
-								<div>{activity.city}, {activity.venue}</div>
+								<div>
+									{activity.description}
+								</div>
+								<div>
+									{activity.city},{" "}
+									{activity.venue}
+								</div>
 							</Item.Description>
 							<Item.Extra>
 								<Button
 									floated="right"
 									content="view"
 									color="blue"
-									onClick={() => selectActivity(activity.id)}
+									onClick={() =>
+										selectActivity(
+											activity.id
+										)
+									}
 								></Button>
 								<Button
+									name={activity.id}
+									loading={target === activity.id && submitting}
 									floated="right"
 									content="delete"
 									color="red"
-									onClick={() => deleteActivity(activity.id)}
+									onClick={(e) =>
+										deleteActivity(
+											e,
+											activity.id
+										)
+									}
 								></Button>
 								<Label
 									basic
-									content={activity.category}
+									content={
+										activity.category
+									}
 								></Label>
 							</Item.Extra>
 						</Item.Content>
